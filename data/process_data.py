@@ -6,12 +6,19 @@ from sqlalchemy import create_engine
 
 
 def load_data(messages_filepath, categories_filepath):
+    '''
+    Reads in the two given csv files and returns a merged csv file.
+    '''
+
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     return pd.merge(messages, categories, on='id')
 
 
 def clean_data(df):
+    '''
+    Returns the cleaned DataFrame.
+    '''
 
     categories = df['categories'].str.split(';', expand=True)
     row = categories.iloc[0]
@@ -32,11 +39,19 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
-    engine = create_engine('sqlite:///' + database_filename + '.db') 
+    '''
+    Saves the DataFrame as an sqlite database with given filename
+    '''
+    engine = create_engine('sqlite:///' + database_filename + '.db')
     df.to_sql(database_filename, engine, index=False, if_exists='replace')
 
 
 def main():
+    '''
+    Takes three arguments from the user, specifying the message filepath,
+    the categories filepath, and desired filepath for cleaned sqlite database
+    Loads, cleans and saves cleaned data.
+    '''
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
