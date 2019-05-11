@@ -19,6 +19,15 @@ def load_data(database_filepath):
     '''
     Reads the sql table 'disaster' from the given filepath
     and returns the feature X, the targets Y and category_names
+
+    Parameters:
+    database_filepath (string): the filepath to an sql table 'disaster'
+
+    Returns:
+    X (Series of strings): the messages
+    Y (DataFrame): 1 in columns where category applies to message, otherwise 0
+    category_names (List of strings): Label for each category
+
     '''
     engine = create_engine('sqlite:///{}'.format(database_filepath))
     df = pd.read_sql_table('disaster', engine)
@@ -32,6 +41,12 @@ def load_data(database_filepath):
 def tokenize(text):
     '''
     takes a string and returns a list of cleaned tokens
+
+    Parameters:
+    text (string): the text to be tokenized
+
+    Returns:
+    List of strings: tokens
     '''
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
@@ -47,6 +62,12 @@ def tokenize(text):
 def build_model():
     '''
     Constructs and returns a classifier pipeline
+
+    Parameters:
+    None
+
+    Returns:
+    Pipeline: classifier pipeline
     '''
 
     pipeline = Pipeline([
@@ -83,7 +104,13 @@ def build_model():
 
 def evaluate_model(model, X_test, Y_test, category_names):
     '''
-    Prints a classification report for each
+    Prints a classification report for each category
+
+    Parameters:
+    model (Pipeline): the model to evaluate
+    X_test (Series of strings): messages to be classified
+    Y_test (Series of int): true classifications
+    category_names: names for categories
     '''
     Y_pred = model.predict(X_test)
 
