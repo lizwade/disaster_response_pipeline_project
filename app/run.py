@@ -52,8 +52,8 @@ def index():
             'data': [
                 Bar(
                     x=list(label_counts.index),
-                    y=label_counts.to_numpy()
-                    
+                    y=label_counts.values
+
                 )
             ],
 
@@ -64,7 +64,8 @@ def index():
                 },
                 'xaxis': {
                     'title': "Label"
-                }
+                },
+                'barmode': 'group'
             }
         }
     ]
