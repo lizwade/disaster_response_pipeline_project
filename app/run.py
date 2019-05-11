@@ -36,6 +36,7 @@ model = joblib.load("../models/trained_model.pkl")
 # index webpage displays cool visuals and receives user input text for model
 @app.route('/')
 @app.route('/index')
+
 def index():
 
     # extract data needed for visuals
