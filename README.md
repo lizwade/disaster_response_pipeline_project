@@ -1,5 +1,11 @@
 # Disaster Response Pipeline Project
 
+### Summary:
+This code cleans and performs machine learning on a provided set of disaster-related tweets (categorized as 'fire', 'request', 'food', etc)
+This results in a model that can be used to classify new text inputs.
+The included app allows the user to input a disaster-related message and then predicts the categories of that message.
+
+
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
 
