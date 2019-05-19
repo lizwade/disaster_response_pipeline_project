@@ -1,6 +1,9 @@
 import json
 import plotly
 import pandas as pd
+import matplotlib.pyplot as plt
+from os import path
+from PIL import Image
 
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
@@ -10,6 +13,8 @@ from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
+from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+
 
 
 app = Flask(__name__)
@@ -41,13 +46,36 @@ def index():
 
     # extract data needed for visuals
     # TODO: Below is an example - modify to extract data for your own visuals
-    #genre_counts = df.groupby('genre').count()['message']
-    #genre_names = list(genre_counts.index)
+    genre_counts = df.groupby('genre').count()['message']
+    genre_names = list(genre_counts.index)
 
     label_counts = df.iloc[:,4:].sum()
 
+    #functions and code to extract data for WordCloud
+    def create_bow(a_series):
+        bow = ""
+        for message in a_series:
+            bow = bow + message
+        return bow
+
+    #I got help from https://www.datacamp.com/community/tutorials/wordcloud-python
+    def display_wordcloud(label, df=df):
+        '''
+        Creates a word cloud using messages tagged with the given label
+        '''
+        wordcloud = WordCloud().generate(create_bow(df[df[label]==1]['message']))
+        #plt.imshow(wordcloud, interpolation='bilinear')
+        #plt.axis("off")
+        #plt.show()
+        return wordcloud
+
+    shelter = display_wordcloud('shelter')
+    weather = display_wordcloud('weather_related')
+
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
+    # Sadly I could not work out how to render the wordcloud in html
+    # So I instead extract and plot the words and frequencies
+    # from the wordcloud objects
     graphs = [
         {
             'data': [
@@ -68,6 +96,54 @@ def index():
                 },
                 'barmode': 'group'
             }
+        },
+        {
+            'data': [
+                Bar(
+                    x=list(shelter.words_.keys()),
+                    y=list(shelter.words_.values()),
+                    #orientation = 'h'
+
+                )
+            ],
+
+            'layout': {
+                'title': 'Top words in SHELTER messages',
+                'yaxis': {
+                    'title': "Relative frequency"
+                },
+                'xaxis': {
+                    'title': "Word"
+                },
+                'barmode': 'group'
+
+            }
+
+
+        },
+        {
+            'data': [
+                Bar(
+                    x=list(weather.words_.keys()),
+                    y=list(weather.words_.values()),
+                    #orientation = 'h'
+
+                )
+            ],
+
+            'layout': {
+                'title': 'Top words in WEATHER_RELATED messages',
+                'yaxis': {
+                    'title': "Relative frequency"
+                },
+                'xaxis': {
+                    'title': "Word"
+                },
+                'barmode': 'group'
+
+            }
+
+
         }
     ]
 
